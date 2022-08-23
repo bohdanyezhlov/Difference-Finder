@@ -1,17 +1,14 @@
 import _ from 'lodash';
 import { resolve } from 'path';
-// import { dirname, resolve } from 'path';
 import { readFileSync } from 'fs';
-// import { fileURLToPath } from 'url';
 
-const genObjectDiff = (data1, data2) => {
-  let result = {};
+const createDiff = (data1, data2) => {
   const keys1 = Object.keys(data1);
   const keys2 = Object.keys(data2);
   const unionKeys = _.union(keys1, keys2);
   const sortedKeys = _.sortBy(unionKeys);
 
-  result = sortedKeys.map((key) => {
+  const diffArr = sortedKeys.map((key) => {
     if (!(_.has(data1, key))) {
       return {
         name: key,
@@ -39,33 +36,30 @@ const genObjectDiff = (data1, data2) => {
     };
   });
 
-  return result;
+  return diffArr;
 };
 
 const genDiff = (filepath1, filepath2) => {
   const path1 = resolve(process.cwd(), filepath1);
   const path2 = resolve(process.cwd(), filepath2);
-  // const __filename = fileURLToPath(import.meta.url);
-  // const __dirname = dirname(__filename);
 
-  const data1 = JSON.parse(readFileSync(path1, 'utf-8'));
-  const data2 = JSON.parse(readFileSync(path2, 'utf-8'));
+  const data1 = JSON.parse(readFileSync(path1), 'utf-8');
+  const data2 = JSON.parse(readFileSync(path2), 'utf-8');
 
-  const diff = genObjectDiff(data1, data2);
+  const diff = createDiff(data1, data2);
 
-  // eslint-disable-next-line no-restricted-syntax
-  for (const item of diff) {
+  diff.forEach((item) => {
     if (item.type === 'deleted') {
       console.log(`- ${item.name}: ${item.value}`);
     } else if (item.type === 'unchanged') {
-      console.log(`${item.name}: ${item.value}`);
+      console.log(`  ${item.name}: ${item.value}`);
     } else if (item.type === 'changed') {
       console.log(`- ${item.name}: ${item.value1}`);
       console.log(`+ ${item.name}: ${item.value2}`);
     } else {
       console.log(`+ ${item.name}: ${item.value}`);
     }
-  }
+  });
 };
 
 export default genDiff;
