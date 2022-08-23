@@ -48,18 +48,28 @@ const genDiff = (filepath1, filepath2) => {
 
   const diff = createDiff(data1, data2);
 
-  diff.forEach((item) => {
-    if (item.type === 'deleted') {
-      console.log(`- ${item.name}: ${item.value}`);
-    } else if (item.type === 'unchanged') {
-      console.log(`  ${item.name}: ${item.value}`);
-    } else if (item.type === 'changed') {
-      console.log(`- ${item.name}: ${item.value1}`);
-      console.log(`+ ${item.name}: ${item.value2}`);
+  let resultStr = '{\n';
+  diff.forEach((item, i) => {
+    let endOfStr = '';
+    if (i !== diff.length - 1) {
+      endOfStr = '\n';
     } else {
-      console.log(`+ ${item.name}: ${item.value}`);
+      endOfStr = '';
+    }
+
+    if (item.type === 'deleted') {
+      resultStr += `  - ${item.name}: ${item.value}${endOfStr}`;
+    } else if (item.type === 'unchanged') {
+      resultStr += `    ${item.name}: ${item.value}${endOfStr}`;
+    } else if (item.type === 'changed') {
+      resultStr += `  - ${item.name}: ${item.value1}${endOfStr}`;
+      resultStr += `  + ${item.name}: ${item.value2}${endOfStr}`;
+    } else {
+      resultStr += `  + ${item.name}: ${item.value}${endOfStr}`;
     }
   });
+
+  return `${resultStr}\n}`;
 };
 
 export default genDiff;
