@@ -1,6 +1,7 @@
 import _ from 'lodash';
-import { resolve } from 'path';
+import path, { resolve } from 'path';
 import { readFileSync } from 'fs';
+import parser from './parsers.js';
 
 const createDiff = (data1, data2) => {
   const keys1 = Object.keys(data1);
@@ -42,16 +43,19 @@ const createDiff = (data1, data2) => {
 const genDiff = (filepath1, filepath2) => {
   const path1 = resolve(process.cwd(), filepath1);
   const path2 = resolve(process.cwd(), filepath2);
+  const extension1 = path.extname(path1);
+  const extension2 = path.extname(path2);
 
-  const data1 = JSON.parse(readFileSync(path1), 'utf-8');
-  const data2 = JSON.parse(readFileSync(path2), 'utf-8');
+  const data1 = parser(readFileSync(path1), extension1);
+  const data2 = parser(readFileSync(path2), extension2);
 
   const diff = createDiff(data1, data2);
 
   let resultStr = '{\n';
   diff.forEach((item, i) => {
     let endOfStr = '';
-    if (i !== diff.length - 1) {
+
+    if (i !== _.last(diff)) {
       endOfStr = '\n';
     } else {
       endOfStr = '';
