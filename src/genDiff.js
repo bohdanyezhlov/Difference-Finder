@@ -55,7 +55,7 @@ const genDiff = (filepath1, filepath2) => {
   diff.forEach((item, i) => {
     let endOfStr = '';
 
-    if (i !== _.last(diff)) {
+    if (i !== diff.length - 1) {
       endOfStr = '\n';
     } else {
       endOfStr = '';
