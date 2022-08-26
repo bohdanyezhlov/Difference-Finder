@@ -50,30 +50,20 @@ const genDiff = (filepath1, filepath2) => {
   const data2 = parser(readFileSync(path2), extension2);
 
   const diff = createDiff(data1, data2);
-
-  let resultStr = '{\n';
-  diff.forEach((item, i) => {
-    let endOfStr = '';
-
-    if (i !== diff.length - 1) {
-      endOfStr = '\n';
-    } else {
-      endOfStr = '';
-    }
-
+  const result = diff.map((item) => {
     if (item.type === 'deleted') {
-      resultStr += `  - ${item.name}: ${item.value}${endOfStr}`;
-    } else if (item.type === 'unchanged') {
-      resultStr += `    ${item.name}: ${item.value}${endOfStr}`;
-    } else if (item.type === 'changed') {
-      resultStr += `  - ${item.name}: ${item.value1}${endOfStr}`;
-      resultStr += `  + ${item.name}: ${item.value2}${endOfStr}`;
-    } else {
-      resultStr += `  + ${item.name}: ${item.value}${endOfStr}`;
+      return `  - ${item.name}: ${item.value}`;
     }
+    if (item.type === 'unchanged') {
+      return `    ${item.name}: ${item.value}`;
+    }
+    if (item.type === 'changed') {
+      return `  - ${item.name}: ${item.value1}\n  + ${item.name}: ${item.value2}`;
+    }
+    return `  + ${item.name}: ${item.value}`;
   });
 
-  return `${resultStr}\n}`;
+  return `{\n${result.join('\n')}\n}`;
 };
 
 export default genDiff;

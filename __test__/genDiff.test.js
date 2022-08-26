@@ -14,10 +14,10 @@ const actual1 = genDiff(getFixturePath('file1.json'), getFixturePath('file2.json
 const actual2 = genDiff(getFixturePath('file1.yml'), getFixturePath('file2.yml'));
 const expected = readFile(('expected_file.yml'));
 
-test('gendiff for flat json files', () => {
+test('gendiff for json files', () => {
   expect(actual1).toBe(expected);
 });
 
-test('gendiff for flat yml files', () => {
+test('gendiff for yml files', () => {
   expect(actual2).toBe(expected);
 });
