@@ -16,10 +16,16 @@ const createDiff = (data1, data2) => {
       const value2 = currentValue2[key];
 
       if (_.isObject(value1) && _.isObject(value2)) {
-        console.log(value1);
-        console.log(value2);
-        return iter(value1, value2);
+        // console.log(value1);
+        // console.log(value2);
+        return { [key]: iter(value1, value2) };
       }
+      // if (_.isObject(value1) && !_.isObject(value2)) {
+      //   // console.log(value1, 'only v1');
+      // }
+      // if (_.isObject(value2) && !_.isObject(value1)) {
+      //   // console.log(value2, 'only v2');
+      // }
 
       if (!(_.has(currentValue1, key))) {
         return {
@@ -47,7 +53,7 @@ const createDiff = (data1, data2) => {
         type: 'unchanged',
       };
     });
-
+    // console.log(result);
     return result;
   };
 
@@ -64,7 +70,7 @@ const genDiff = (filepath1, filepath2) => {
   const data2 = parser(readFileSync(path2), extension2);
 
   const diff = createDiff(data1, data2);
-
+  console.log(diff);
   const result = diff.map((item) => {
     if (item.type === 'deleted') {
       return `  - ${item.name}: ${item.value}`;
