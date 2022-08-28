@@ -2,62 +2,56 @@ import _ from 'lodash';
 import path, { resolve } from 'path';
 import { readFileSync } from 'fs';
 import parser from './parsers.js';
+// import formatter from './formatter.js';
 
 const createDiff = (data1, data2) => {
-  const iter = (currentValue1, currentValue2) => {
-    const keys1 = Object.keys(currentValue1);
-    const keys2 = Object.keys(currentValue2);
-    const unionKeys = _.union(keys1, keys2);
-    const sortedKeys = _.sortBy(unionKeys);
-    // console.log(sortedKeys);
+  const keys1 = Object.keys(data1);
+  const keys2 = Object.keys(data2);
+  const unionKeys = _.union(keys1, keys2);
+  const sortedKeys = _.sortBy(unionKeys);
 
-    const result = sortedKeys.map((key) => {
-      const value1 = currentValue1[key];
-      const value2 = currentValue2[key];
+  const result = sortedKeys.map((key) => {
+    const value1 = data1[key];
+    const value2 = data2[key];
 
-      if (_.isObject(value1) && _.isObject(value2)) {
-        // console.log(value1);
-        // console.log(value2);
-        return { [key]: iter(value1, value2) };
-      }
-      // if (_.isObject(value1) && !_.isObject(value2)) {
-      //   // console.log(value1, 'only v1');
-      // }
-      // if (_.isObject(value2) && !_.isObject(value1)) {
-      //   // console.log(value2, 'only v2');
-      // }
-
-      if (!(_.has(currentValue1, key))) {
-        return {
-          name: key,
-          value: currentValue2[key],
-          type: 'added',
-        };
-      } if (!(_.has(currentValue2, key))) {
-        return {
-          name: key,
-          value: currentValue1[key],
-          type: 'deleted',
-        };
-      } if (currentValue1[key] !== currentValue2[key]) {
-        return {
-          name: key,
-          value1: currentValue1[key],
-          value2: currentValue2[key],
-          type: 'changed',
-        };
-      }
+    if (_.isObject(value1) && _.isObject(value2)) {
+      const currentValue = createDiff(value1, value2);
+      console.log(currentValue);
       return {
         name: key,
-        value: currentValue1[key],
+        value: currentValue,
         type: 'unchanged',
       };
-    });
-    // console.log(result);
-    return result;
-  };
+    }
 
-  return iter(data1, data2);
+    if (!(_.has(data1, key))) {
+      return {
+        name: key,
+        value: value2,
+        type: 'added',
+      };
+    } if (!(_.has(data2, key))) {
+      return {
+        name: key,
+        value: value1,
+        type: 'deleted',
+      };
+    } if (value1 !== value2) {
+      return {
+        name: key,
+        value1,
+        value2,
+        type: 'changed',
+      };
+    }
+    return {
+      name: key,
+      value: value1,
+      type: 'unchanged',
+    };
+  });
+
+  return result;
 };
 
 const genDiff = (filepath1, filepath2) => {
@@ -71,20 +65,8 @@ const genDiff = (filepath1, filepath2) => {
 
   const diff = createDiff(data1, data2);
   console.log(diff);
-  const result = diff.map((item) => {
-    if (item.type === 'deleted') {
-      return `  - ${item.name}: ${item.value}`;
-    }
-    if (item.type === 'unchanged') {
-      return `    ${item.name}: ${item.value}`;
-    }
-    if (item.type === 'changed') {
-      return `  - ${item.name}: ${item.value1}\n  + ${item.name}: ${item.value2}`;
-    }
-    return `  + ${item.name}: ${item.value}`;
-  });
-
-  return `{\n${result.join('\n')}\n}`;
+  // const result = formatter(diff, format);
+  // return result;
 };
 
 export default genDiff;
