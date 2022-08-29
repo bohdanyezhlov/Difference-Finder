@@ -2,7 +2,7 @@ import _ from 'lodash';
 import path, { resolve } from 'path';
 import { readFileSync } from 'fs';
 import parser from './parsers.js';
-// import formatter from './formatter.js';
+import formatter from './formatter.js';
 
 const createDiff = (data1, data2) => {
   const keys1 = Object.keys(data1);
@@ -16,7 +16,7 @@ const createDiff = (data1, data2) => {
 
     if (_.isObject(value1) && _.isObject(value2)) {
       const currentValue = createDiff(value1, value2);
-      console.log(currentValue);
+
       return {
         name: key,
         value: currentValue,
@@ -54,7 +54,7 @@ const createDiff = (data1, data2) => {
   return result;
 };
 
-const genDiff = (filepath1, filepath2) => {
+const genDiff = (filepath1, filepath2, format = 'stylish') => {
   const path1 = resolve(process.cwd(), filepath1);
   const path2 = resolve(process.cwd(), filepath2);
   const extension1 = path.extname(path1);
@@ -64,9 +64,9 @@ const genDiff = (filepath1, filepath2) => {
   const data2 = parser(readFileSync(path2), extension2);
 
   const diff = createDiff(data1, data2);
-  console.log(diff);
-  // const result = formatter(diff, format);
-  // return result;
+  // console.log(diff);
+  const result = formatter(diff, format);
+  return result;
 };
 
 export default genDiff;
