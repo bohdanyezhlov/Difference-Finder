@@ -5,7 +5,5 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/b2d52342403a73a27529/test_coverage)](https://codeclimate.com/github/Bohdan2241/frontend-project-lvl2/test_coverage)
 ### Описание проекта
 ### Вычислитель отличий – программа, определяющая разницу между двумя структурами данных.
-Сравнение плоских JSON файлов:\
-[![asciicast](https://asciinema.org/a/516682.svg)](https://asciinema.org/a/516682)\
-Сравнение плоских YAML файлов:\
-[![asciicast](https://asciinema.org/a/516832.svg)](https://asciinema.org/a/516832)
+Сравнение вложенных структур:\
+[![asciicast](https://asciinema.org/a/517919.svg)](https://asciinema.org/a/517919)

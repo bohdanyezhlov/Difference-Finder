@@ -8,7 +8,7 @@ const parser = (data, extension) => {
     return yaml.load(data, 'utf-8');
   }
 
-  return new Error('unexpected extension');
+  return new Error(`Unknown file extension ${extension}`);
 };
 
 export default parser;
