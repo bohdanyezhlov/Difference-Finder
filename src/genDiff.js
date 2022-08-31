@@ -2,7 +2,7 @@ import path, { resolve } from 'path';
 import { readFileSync } from 'fs';
 import parser from './parsers.js';
 import creatingDiff from './creatingDiff.js';
-import formatter from './formatter.js';
+import formatter from './formatters/index.js';
 
 const genDiff = (filepath1, filepath2, format) => {
   const path1 = resolve(process.cwd(), filepath1);

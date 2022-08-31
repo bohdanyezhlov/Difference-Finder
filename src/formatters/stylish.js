@@ -26,18 +26,16 @@ const toString = (obj, depth) => {
 const conversionFunctions = {
   root: (item, depth, fn) => {
     const result = item.children
-      .map((child) => conversionFunctions[child.type](child, depth + 1, fn))
-      .join('\n');
-    return `{\n${result}\n}`;
+      .map((child) => conversionFunctions[child.type](child, depth + 1, fn));
+    return `{\n${result.join('\n')}\n}`;
   },
   added: (item, depth) => `${indent(depth, '+')}${item.name}: ${toString(item.value, depth)}`,
   removed: (item, depth) => `${indent(depth, '-')}${item.name}: ${toString(item.value, depth)}`,
   nested: (item, depth, fn) => {
     const result = item.children
-      .map((child) => conversionFunctions[child.type](child, depth + 1, fn))
-      .join('\n');
+      .map((child) => conversionFunctions[child.type](child, depth + 1, fn));
     return `${indent(depth)}${item.name}: {\n${String(
-      result,
+      result.join('\n'),
     )}\n${indent(depth)}}`;
   },
   changed: (item, depth) => `${indent(depth, '-')}${item.name}: ${toString(
@@ -56,12 +54,4 @@ const stylish = (diff) => {
   return iter(diff, 0);
 };
 
-const formatter = (diff, format = 'stylish') => {
-  if (format !== 'stylish') {
-    return `Unknown format ${format}`;
-  }
-
-  return stylish(diff);
-};
-
-export default formatter;
+export default stylish;
