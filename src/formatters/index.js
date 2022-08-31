@@ -14,5 +14,5 @@ export default (diff, format = 'stylish') => {
     return JSON.stringify(diff);
   }
 
-  return `Unknown format ${format}`;
+  throw new Error(`Unknown format ${format}`);
 };
