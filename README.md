@@ -12,3 +12,7 @@
 Plain формат:\
 \
 [![asciicast](https://asciinema.org/a/518071.svg)](https://asciinema.org/a/518071)
+\
+JSON формат:\
+\
+[![asciicast](https://asciinema.org/a/518087.svg)](https://asciinema.org/a/518087)
