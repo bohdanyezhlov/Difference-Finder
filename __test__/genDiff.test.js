@@ -12,8 +12,10 @@ const readFile = (filename) => readFileSync(getFixturePath(filename), 'utf-8');
 
 const actual1 = genDiff(getFixturePath('file1.json'), getFixturePath('file2.yml'));
 const actual2 = genDiff(getFixturePath('file1.json'), getFixturePath('file2.yml'), 'plain');
-const expected1 = readFile(('expected_file.yml'));
-const expected2 = readFile(('expected_plain_file.yaml'));
+const actual3 = genDiff(getFixturePath('file1.json'), getFixturePath('file2.yml'), 'json');
+const expected1 = readFile('expected_stylish_file.yml');
+const expected2 = readFile('expected_plain_file.yaml');
+const expected3 = readFile('expected_json_file.json');
 
 test('gendiff stylish format', () => {
   expect(actual1).toBe(expected1);
@@ -21,4 +23,8 @@ test('gendiff stylish format', () => {
 
 test('gendiff plain format', () => {
   expect(actual2).toBe(expected2);
+});
+
+test('gendiff json format', () => {
+  expect(actual3).toBe(expected3);
 });
