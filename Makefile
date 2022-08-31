@@ -1,6 +1,5 @@
 install: install-deps link
 
-
 install-deps:
 	npm ci
 
