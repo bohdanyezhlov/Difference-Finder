@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const creatingDiffTree = (data1, data2) => {
+const createDiffTree = (data1, data2) => {
   const sortedKeys = _.sortBy(_.union(Object.keys(data1), Object.keys(data2)));
 
   return sortedKeys.map((key) => {
@@ -8,7 +8,7 @@ const creatingDiffTree = (data1, data2) => {
     const value2 = data2[key];
 
     if (_.isObject(value1) && _.isObject(value2)) {
-      const currentValue = creatingDiffTree(value1, value2);
+      const currentValue = createDiffTree(value1, value2);
       return {
         name: key,
         children: currentValue,
@@ -31,7 +31,6 @@ const creatingDiffTree = (data1, data2) => {
         type: 'removed',
       };
     }
-
     if (value1 !== value2) {
       return {
         name: key,
@@ -49,9 +48,9 @@ const creatingDiffTree = (data1, data2) => {
   });
 };
 
-const createTree = (object1, object2) => ({
-  children: creatingDiffTree(object1, object2),
+const createDiff = (object1, object2) => ({
+  children: createDiffTree(object1, object2),
   type: 'root',
 });
 
-export default createTree;
+export default createDiff;

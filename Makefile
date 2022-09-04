@@ -1,4 +1,4 @@
-install: install-deps link
+install: install-deps
 
 install-deps:
 	npm ci

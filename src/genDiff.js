@@ -1,21 +1,24 @@
 import path, { resolve } from 'path';
 import { readFileSync } from 'fs';
 import parser from './parsers.js';
-import creatingDiff from './creatingDiff.js';
+import createDiff from './createDiff.js';
 import formatter from './formatters/index.js';
 
-const genDiff = (filepath1, filepath2, format) => {
-  const path1 = resolve(process.cwd(), filepath1);
-  const path2 = resolve(process.cwd(), filepath2);
-  const extension1 = path.extname(path1);
-  const extension2 = path.extname(path2);
+const getAbsolutePath = (filepath) => resolve(process.cwd(), filepath);
+const getExtension = (filepath) => path.extname(filepath);
+const readFile = (filepath) => readFileSync(filepath);
 
-  const data1 = parser(readFileSync(path1), extension1);
-  const data2 = parser(readFileSync(path2), extension2);
-  const diff = creatingDiff(data1, data2);
+const genDiff = (filepath1, filepath2, format = 'stylish') => {
+  const path1 = getAbsolutePath(filepath1);
+  const path2 = getAbsolutePath(filepath2);
+  const extension1 = getExtension(path1);
+  const extension2 = getExtension(path2);
 
-  const result = formatter(diff, format);
-  return result;
+  const data1 = parser(readFile(path1), extension1);
+  const data2 = parser(readFile(path2), extension2);
+  const diff = createDiff(data1, data2);
+
+  return formatter(diff, format);
 };
 
 export default genDiff;

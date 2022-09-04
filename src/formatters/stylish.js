@@ -11,7 +11,7 @@ const indent = (depth, symbol = ' ') => {
 };
 
 const toString = (obj, depth) => {
-  if (!_.isObject(obj)) {
+  if (!_.isObject(obj) || Array.isArray(obj)) {
     return String(obj);
   }
 

@@ -8,7 +8,7 @@ const createPath = (path, name) => {
 };
 
 const toString = (obj) => {
-  if (!_.isObject(obj)) {
+  if (!_.isObject(obj) || Array.isArray(obj)) {
     if (typeof obj === 'string') {
       return `'${obj}'`;
     }
