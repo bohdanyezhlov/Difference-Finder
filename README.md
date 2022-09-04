@@ -11,7 +11,7 @@
 - `make link` install the package
 ## Tests and Linters
 - `make test`
-- `make test --coverage`
+- `make test-coverage`
 - `make lint`
 ## Usage
 - `gendiff -f plain yourfile1.json yourfile2.yaml`
