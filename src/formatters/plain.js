@@ -1,53 +1,48 @@
 import _ from 'lodash';
 
-const createPath = (path, name) => {
+const createPath = (path, key) => {
   if (path !== '') {
-    return [path, name].join('.');
+    return [path, key].join('.');
   }
-  return name;
+  return key;
 };
 
-const toString = (obj) => {
-  if (!_.isObject(obj) || Array.isArray(obj)) {
-    if (typeof obj === 'string') {
-      return `'${obj}'`;
+const stringify = (val) => {
+  if (!_.isObject(val) || Array.isArray(val)) {
+    if (typeof val === 'string') {
+      return `'${val}'`;
     }
-    return String(obj);
+    return String(val);
   }
 
   return '[complex value]';
 };
 
 const conversionFunctions = {
-  root: (item, path, fn) => {
-    const result = item.children.flatMap((child) => {
-      if (child.type === 'unchanged') {
-        return [];
-      }
-      return conversionFunctions[child.type](child, path, fn);
-    });
+  root: (node, path, fn) => {
+    const result = node.children
+      .map((child) => conversionFunctions[child.type](child, path, fn));
+
     return `${result.join('\n')}`;
   },
-  added: (item, path) => `Property '${createPath(path, item.name)}' was added with value: ${toString(item.value)}`,
-  removed: (item, path) => `Property '${createPath(path, item.name)}' was removed`,
-  nested: (item, path, fn) => {
-    const result = item.children.flatMap((child) => {
-      if (child.type === 'unchanged') {
-        return [];
-      }
-      return conversionFunctions[child.type](child, createPath(path, item.name), fn);
-    });
+  added: (node, path) => `Property '${createPath(path, node.key)}' was added with value: ${stringify(node.value)}`,
+  removed: (node, path) => `Property '${createPath(path, node.key)}' was removed`,
+  nested: (node, path, fn) => {
+    const result = node.children
+      .flatMap((child) => conversionFunctions[child.type](child, createPath(path, node.key), fn));
 
     return `${String(
       result.join('\n'),
     )}`;
   },
-  changed: (item, path) => `Property '${createPath(path, item.name)}' was updated. From ${toString(item.value1)} to ${toString(item.value2)}`,
-  unchanged: () => null,
+  changed: (node, path) => (
+    `Property '${createPath(path, node.key)}' was updated. From ${stringify(node.value1)} to ${stringify(node.value2)}`
+  ),
+  unchanged: () => [],
 };
 
 const plain = (diff) => {
-  const iter = (item, path) => conversionFunctions[item.type](item, path, iter);
+  const iter = (node, path) => conversionFunctions[node.type](node, path, iter);
 
   return iter(diff, '');
 };

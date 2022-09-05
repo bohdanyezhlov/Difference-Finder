@@ -10,46 +10,46 @@ const indent = (depth, symbol = ' ') => {
   return depth === 0 ? '    ' : string;
 };
 
-const toString = (obj, depth) => {
-  if (!_.isObject(obj) || Array.isArray(obj)) {
-    return String(obj);
+const stringify = (val, depth) => {
+  if (!_.isObject(val) || Array.isArray(val)) {
+    return String(val);
   }
 
-  const entries = Object.entries(obj);
+  const entries = Object.entries(val);
   const result = entries
     // eslint-disable-next-line no-use-before-define
-    .map(([name, value]) => conversionFunctions.unchanged({ name, value }, depth + 1));
+    .map(([key, value]) => conversionFunctions.unchanged({ key, value }, depth + 1));
 
   return `{\n${result.join('\n')}\n${indent(depth)}}`;
 };
 
 const conversionFunctions = {
-  root: (item, depth, fn) => {
-    const result = item.children
+  root: (node, depth, fn) => {
+    const result = node.children
       .map((child) => conversionFunctions[child.type](child, depth + 1, fn));
     return `{\n${result.join('\n')}\n}`;
   },
-  added: (item, depth) => `${indent(depth, '+')}${item.name}: ${toString(item.value, depth)}`,
-  removed: (item, depth) => `${indent(depth, '-')}${item.name}: ${toString(item.value, depth)}`,
-  nested: (item, depth, fn) => {
-    const result = item.children
+  added: (node, depth) => `${indent(depth, '+')}${node.key}: ${stringify(node.value, depth)}`,
+  removed: (node, depth) => `${indent(depth, '-')}${node.key}: ${stringify(node.value, depth)}`,
+  nested: (node, depth, fn) => {
+    const result = node.children
       .map((child) => conversionFunctions[child.type](child, depth + 1, fn));
-    return `${indent(depth)}${item.name}: {\n${String(
+    return `${indent(depth)}${node.key}: {\n${String(
       result.join('\n'),
     )}\n${indent(depth)}}`;
   },
-  changed: (item, depth) => `${indent(depth, '-')}${item.name}: ${toString(
-    item.value1,
+  changed: (node, depth) => `${indent(depth, '-')}${node.key}: ${stringify(
+    node.value1,
     depth,
-  )}\n${indent(depth, '+')}${item.name}: ${toString(
-    item.value2,
+  )}\n${indent(depth, '+')}${node.key}: ${stringify(
+    node.value2,
     depth,
   )}`,
-  unchanged: (item, depth) => `${indent(depth)}${item.name}: ${toString(item.value, depth)}`,
+  unchanged: (node, depth) => `${indent(depth)}${node.key}: ${stringify(node.value, depth)}`,
 };
 
 const stylish = (diff) => {
-  const iter = (item, depth) => conversionFunctions[item.type](item, depth, iter);
+  const iter = (node, depth) => conversionFunctions[node.type](node, depth, iter);
 
   return iter(diff, 0);
 };

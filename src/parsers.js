@@ -1,14 +1,9 @@
 import yaml from 'js-yaml';
 
-const parser = (data, extension) => {
-  if (extension === '.json') {
-    return JSON.parse(data, 'utf-8');
-  }
-  if (extension === '.yml' || extension === '.yaml') {
-    return yaml.load(data, 'utf-8');
-  }
-
-  throw new Error(`Unknown file extension ${extension}`);
+const parser = {
+  json: (data) => JSON.parse(data),
+  yaml: (data) => yaml.load(data),
+  yml: (data) => yaml.load(data),
 };
 
-export default parser;
+export default (data, type) => parser[type](data);

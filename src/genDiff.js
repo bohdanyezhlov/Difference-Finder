@@ -5,7 +5,7 @@ import createDiff from './createDiff.js';
 import formatter from './formatters/index.js';
 
 const getAbsolutePath = (filepath) => resolve(process.cwd(), filepath);
-const getExtension = (filepath) => path.extname(filepath);
+const getExtension = (filepath) => path.extname(filepath).substring(1);
 const readFile = (filepath) => readFileSync(filepath);
 
 const genDiff = (filepath1, filepath2, format = 'stylish') => {
