@@ -21,7 +21,7 @@ const stringify = (val) => {
 const conversionFunctions = {
   root: (node, path, fn) => {
     const result = node.children
-      .map((child) => conversionFunctions[child.type](child, path, fn));
+      .flatMap((child) => conversionFunctions[child.type](child, path, fn));
 
     return `${result.join('\n')}`;
   },

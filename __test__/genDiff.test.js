@@ -18,13 +18,13 @@ const expected2 = readFile('expected_plain_file.yaml');
 const expected3 = readFile('expected_json_file.json');
 
 test('gendiff stylish format', () => {
-  expect(actual1).toBe(expected1);
+  expect(actual1).toEqual(expected1);
 });
 
 test('gendiff plain format', () => {
-  expect(actual2).toBe(expected2);
+  expect(actual2).toEqual(expected2);
 });
 
 test('gendiff json format', () => {
-  expect(actual3).toBe(expected3);
+  expect(actual3).toEqual(expected3);
 });
