@@ -14,11 +14,11 @@ const genDiff = (filepath1, filepath2, format = 'stylish') => {
   const extension1 = getExtension(path1);
   const extension2 = getExtension(path2);
 
-  const data1 = parser(readFile(path1), extension1);
-  const data2 = parser(readFile(path2), extension2);
+  const data1 = parser(extension1)(readFile(path1));
+  const data2 = parser(extension2)(readFile(path2));
   const diff = createDiff(data1, data2);
 
-  return formatter(diff, format);
+  return formatter(format)(diff);
 };
 
 export default genDiff;

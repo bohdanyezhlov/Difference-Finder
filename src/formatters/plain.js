@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 const createPath = (path, key) => {
   if (path !== '') {
     return [path, key].join('.');
@@ -8,14 +6,10 @@ const createPath = (path, key) => {
 };
 
 const stringify = (val) => {
-  if (!_.isObject(val) || Array.isArray(val)) {
-    if (typeof val === 'string') {
-      return `'${val}'`;
-    }
-    return String(val);
-  }
-
-  return '[complex value]';
+  if (val === null) return null;
+  if (typeof val === 'string') return `'${val}'`;
+  if (typeof val === 'object' || Array.isArray(val)) return '[complex value]';
+  return String(val);
 };
 
 const conversionFunctions = {
