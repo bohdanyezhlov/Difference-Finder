@@ -8,7 +8,7 @@ const createPath = (path, key) => {
 const stringify = (val) => {
   if (val === null) return null;
   if (typeof val === 'string') return `'${val}'`;
-  if (typeof val === 'object' || Array.isArray(val)) return '[complex value]';
+  if (typeof val === 'object') return '[complex value]';
   return String(val);
 };
 
